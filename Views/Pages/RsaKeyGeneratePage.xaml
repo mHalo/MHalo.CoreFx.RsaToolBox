@@ -1,0 +1,130 @@
+﻿<Page
+    x:Class="MHalo.CoreFx.RsaToolBox.Views.Pages.RsaKeyGeneratePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MHalo.CoreFx.RsaToolBox.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="RsaKeyGeneratePage"
+    d:DataContext="{d:DesignInstance local:RsaKeyGeneratePage, IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Grid VerticalAlignment="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <!--顶部工具栏-->
+        <ui:Card Grid.Row="0" Background="#FFF1F1F1" Padding="12,8,12,8" Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="150"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="150"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="密钥类型：" VerticalAlignment="Center" Width="100" HorizontalAlignment="Left" />
+                <ComboBox Grid.Column="1" MinWidth="120" SelectedIndex="{Binding ViewModel.RsaKeyTypeSelectedIndex, Mode = TwoWay}"  HorizontalAlignment="Left" SelectionChanged="RsaKeyType_SelectionChanged">
+                    <ComboBoxItem Content="Pkcs1" IsSelected="True" />
+                    <ComboBoxItem Content="Pkcs8" />
+                    <ComboBoxItem Content="Xml" />
+                </ComboBox>
+                <TextBlock Grid.Column="2" Text="密钥格式：" VerticalAlignment="Center" Width="100" HorizontalAlignment="Left" />
+                <ComboBox Grid.Column="3" MinWidth="120" SelectedIndex="{Binding ViewModel.RsaKeyFormat, Mode = TwoWay}"  HorizontalAlignment="Left">
+                    <ComboBoxItem Content="Txt" IsEnabled="{Binding ViewModel.CanExportTxtFormat}" IsSelected="True" />
+                    <ComboBoxItem Content="Pem" IsEnabled="{Binding ViewModel.CanExportPemFormat}" />
+                    <ComboBoxItem Content="Xml" IsEnabled="{Binding ViewModel.CanExportXmlFormat}" />
+                </ComboBox>
+                <ui:Button Grid.Column="4" Width="120" Content="生成密钥" Icon="{ui:SymbolIcon ArrowEnterLeft24}" HorizontalAlignment="Right" Appearance="Primary" Command="{Binding ViewModel.GenderateKeyCommand, Mode=OneWay}" />
+            </Grid>
+        </ui:Card>
+        <!--密钥生成区域-->        
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*"></ColumnDefinition>
+                <ColumnDefinition Width="50*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" CornerRadius="0" Margin="0,0,5,0" Background="#FFF7F7F7" BorderThickness="1" BorderBrush="#FFF1F1F1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Padding="6,4">
+                        <Grid>
+                            <!--CardHeader-->
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Height="32" Padding="8" TextWrapping="WrapWithOverflow" Text="公钥" FontSize="14" FontWeight="Bold"/>
+                            <Grid Grid.Column="1" HorizontalAlignment="Right">
+                                <ui:Button BorderThickness="1" CornerRadius="6" Content="复制" Height="32" Icon="{ui:SymbolIcon Copy24}" Click="PublicKey_Copy_Click" IsEnabled="{Binding Path=ViewModel.IsGenerateKeyValid, Mode=OneWay}"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="1" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
+                        <!--CardBody-->
+                        <TextBlock Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.RSAKey.PublicKey, Mode=OneWay}"  Foreground="{Binding Path=ViewModel.KeyContentColor, Mode=OneWay}" TextWrapping="Wrap" />
+                    </Border>
+                    <Border Visibility="{ Binding ViewModel.RsaKeyTypeVisible, Mode=OneWay}" Grid.Row="2" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
+                        <!--CardFooter-->
+                        <TextBlock Padding="8" Text="{Binding Path=ViewModel.KeyGenerateTips, Mode=OneWay}" FontSize="12" Foreground="#FF929292"/>
+                    </Border>
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" CornerRadius="0" Margin="0,0,5,0" Background="#FFF7F7F7" BorderThickness="1" BorderBrush="#FFF1F1F1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Padding="6,4">
+                        <Grid>
+                            <!--CardHeader-->
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Height="32" Padding="8" TextWrapping="WrapWithOverflow" Text="私钥" FontSize="14" FontWeight="Bold"/>
+                            <Grid Grid.Column="1" HorizontalAlignment="Right">
+                                <ui:Button BorderThickness="1" CornerRadius="6" Content="复制" Height="32" Icon="{ui:SymbolIcon Copy24}" Click="PrivateKey_Copy_Click" IsEnabled="{Binding Path=ViewModel.IsGenerateKeyValid, Mode=OneWay}"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="1" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
+                        <!--CardBody-->
+                        <TextBlock Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.RSAKey.PrivateKey, Mode=OneWay}"  Foreground="{Binding Path=ViewModel.KeyContentColor, Mode=OneWay}" TextWrapping="Wrap" />
+                    </Border>
+                    <Border Visibility="{ Binding ViewModel.RsaKeyTypeVisible, Mode=OneWay}" Grid.Row="2" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
+                        <!--CardFooter-->
+                        <TextBlock Padding="8" Text="{Binding Path=ViewModel.KeyGenerateTips, Mode=OneWay}" FontSize="12" Foreground="#FF929292"/>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+        <!--底部工具栏-->
+        <ui:Card Grid.Row="2" Background="#FFF1F1F1" Padding="12,8,12,8" Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="160"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Column="0" IsChecked="{Binding ViewModel.SaveToLocal, Mode=TwoWay}" Content="保存到本地"/>
+                <ui:HyperlinkButton Grid.Column="1" Padding="8" Click="OpenRSAFolder_Click" Cursor="Hand">
+                    <TextBlock Text="{Binding ViewModel.RsaLocalFolder}" TextWrapping="WrapWithOverflow" FontSize="12" Foreground="#FF929292"/>
+                </ui:HyperlinkButton>
+                <ui:Button Grid.Column="2" Width="120" Content="打开文件夹" Icon="{ui:SymbolIcon FolderOpen24}" HorizontalAlignment="Right"   Click="OpenRSAFolder_Click" IsEnabled="{Binding ViewModel.CanOpenRSAFolder}" />
+            </Grid>
+        </ui:Card>
+    </Grid>
+</Page>
