@@ -27,6 +27,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             snackbarService = _snackbarService;
             InitializeComponent();
         }
+
         #region  公钥相关处理程序
         private async void PickUp_PublicKey_Click(object sender, RoutedEventArgs e)
         {
@@ -52,7 +53,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 if(RSAKeyValidator.IsValidPublicKey(content, out var publicKeyType))
                 {
                     ViewModel.PublickKey = content;
-                    ViewModel.PublickKeyType = $"密钥格式：{publicKeyType}";
+                    ViewModel.PublickKeyType = $"{publicKeyType}";
                     ViewModel.PublickKeyTypeVisible = Visibility.Visible;
                 }
                 else
@@ -88,14 +89,14 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
         }
         private void PublicKeyBox_PreviewDragOver(object sender, DragEventArgs e)
         {
-            PublicKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 95, 249, 177));
-            PublicKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(180, 211, 249, 216));
+            PublicKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 43, 138, 62));
+            PublicKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(255, 214, 255, 224));
             e.Handled = true;
         }
         private void PublicKeyBox_PreviewDragLeave(object sender, DragEventArgs e)
         {
             PublicKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 241, 241, 241));
-            PublicKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 211, 249, 216));
+            PublicKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
             e.Handled = true;
         }
         private void PublicKeyBox_DragEnter(object sender, DragEventArgs e)
@@ -142,7 +143,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                             if (RSAKeyValidator.IsValidPublicKey(content, out var publicKeyType))
                             {
                                 ViewModel.PublickKey = content;
-                                ViewModel.PublickKeyType = $"密钥格式：{publicKeyType}";
+                                ViewModel.PublickKeyType = $"{publicKeyType}";
                                 ViewModel.PublickKeyTypeVisible = Visibility.Visible;
                             }
                             else
@@ -194,7 +195,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 );
             }
             PublicKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 241, 241, 241));
-            PublicKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 211, 249, 216));
+            PublicKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
         #endregion
 
@@ -223,7 +224,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 if (RSAKeyValidator.IsValidPrivateKey(content, out var privateKeyType))
                 {
                     ViewModel.PrivateKey = content;
-                    ViewModel.PrivateKeyType = $"密钥格式：{privateKeyType}";
+                    ViewModel.PrivateKeyType = $"{privateKeyType}";
                     ViewModel.PrivateKeyTypeVisible = Visibility.Visible;
                 }
                 else
@@ -258,14 +259,14 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
         }
         private void PrivateKeyBox_PreviewDragOver(object sender, DragEventArgs e)
         {
-            PrivateKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 95, 249, 177));
-            PrivateKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(180, 211, 249, 216));
+            PrivateKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 173, 84, 29));
+            PrivateKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(255, 255, 227, 209));
             e.Handled = true;
         }
         private void PrivateKeyBox_PreviewDragLeave(object sender, DragEventArgs e)
         {
             PrivateKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 241, 241, 241));
-            PrivateKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 211, 249, 216));
+            PrivateKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
             e.Handled = true;
         }
         private void PrivateKeyBox_DragEnter(object sender, DragEventArgs e)
@@ -312,7 +313,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                             if (RSAKeyValidator.IsValidPrivateKey(content, out var privateKeyType))
                             {
                                 ViewModel.PrivateKey = content;
-                                ViewModel.PrivateKeyType = $"密钥格式：{privateKeyType}";
+                                ViewModel.PrivateKeyType = $"{privateKeyType}";
                                 ViewModel.PrivateKeyTypeVisible = Visibility.Visible;
                             }
                             else
@@ -364,8 +365,115 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 );
             }
             PrivateKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 241, 241, 241));
-            PrivateKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 211, 249, 216));
+            PrivateKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
         #endregion
+
+
+        private void PublicKeyEncrypt_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ViewModel.PublickKey))
+            {
+                snackbarService.Show(
+                    "加密失败",
+                    "未识别到有效的公钥字符",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+                return;
+            }
+            if(string.IsNullOrEmpty(ViewModel.OrginalText))
+            {
+                snackbarService.Show(
+                    "加密失败",
+                    "请输入需要加密的原文",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+                return;
+            }
+        }
+        private void PublicKeyDecrypt_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (string.IsNullOrEmpty(ViewModel.PublickKey))
+            {
+                snackbarService.Show(
+                    "解密失败",
+                    "未识别到有效的公钥字符",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+            }
+            if (string.IsNullOrEmpty(ViewModel.OrginalText))
+            {
+                snackbarService.Show(
+                    "解密失败",
+                    "请输入需要解密的原文",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+                return;
+            }
+        }
+        private void PrivateKeyEncrypt_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (string.IsNullOrEmpty(ViewModel.PublickKey))
+            {
+                snackbarService.Show(
+                    "加密失败",
+                    "未识别到有效的私钥字符",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+            }
+            if (string.IsNullOrEmpty(ViewModel.OrginalText))
+            {
+                snackbarService.Show(
+                    "加密失败",
+                    "请输入需要加密的原文",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+                return;
+            }
+        }
+        private void PrivateKeyDecrypt_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (string.IsNullOrEmpty(ViewModel.PublickKey))
+            {
+                snackbarService.Show(
+                    "解密失败",
+                    "未识别到有效的私钥字符",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+            }
+            if (string.IsNullOrEmpty(ViewModel.OrginalText))
+            {
+                snackbarService.Show(
+                    "解密失败",
+                    "请输入需要解密的原文",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+                return;
+            }
+        }
+
+        private void OrginalTextBox_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+             
+        }
     }
 }

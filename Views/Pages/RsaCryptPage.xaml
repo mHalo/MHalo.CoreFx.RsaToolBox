@@ -42,13 +42,13 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Border >
+        <Border Grid.Row="0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50*"></ColumnDefinition>
                     <ColumnDefinition Width="50*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Border x:Name="PublicKeyWrapper" Grid.Column="0" CornerRadius="0" Margin="0,0,5,0" BorderThickness="1" BorderBrush="#FFF1F1F1">
+                <Border Grid.Column="0" CornerRadius="0" Margin="0,0,5,0" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -59,26 +59,31 @@
                             <Grid>
                                 <!--CardHeader-->
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                     <ColumnDefinition Width="120"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Height="32" Padding="8" TextWrapping="Wrap" Text="公钥" FontSize="14" FontWeight="Bold"/>
-                                <Grid Grid.Column="1" HorizontalAlignment="Right">
-                                    <ui:Button  BorderThickness="1" CornerRadius="6" Content="读取文件" Height="32" Icon="{ui:SymbolIcon FolderOpen24}" Click="PickUp_PublicKey_Click" FontSize="12" />
+                                <Border Grid.Column="0" Height="32" Width="42px" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                    <TextBlock Text="公钥" FontSize="16" FontWeight="Bold" LineStackingStrategy="BlockLineHeight" LineHeight="28" Foreground="#2b8a3e" />
+                                </Border>
+                                <!--<TextBlock Height="32" Padding="8" TextWrapping="Wrap" Text="[ pkcs1 ]" FontSize="14" FontWeight="Bold" Foreground="#52cc6f" />-->
+                                <Border Grid.Column="1" Height="32" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="0" Visibility="{Binding ViewModel.PublickKeyTypeVisible}">
+                                    <Border CornerRadius="4" Height="24" Margin="0,2" Padding="8, 2" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="#2b8a3e">
+                                        <Label Content="{Binding ViewModel.PublickKeyType}" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" />
+                                    </Border>
+                                </Border>
+                                <Grid Grid.Column="2" HorizontalAlignment="Right">
+                                    <ui:Button  BorderThickness="1" CornerRadius="0" Content="读取文件" Height="32" Icon="{ui:SymbolIcon FolderOpen24}" Click="PickUp_PublicKey_Click" FontSize="12"  />
                                 </Grid>
                             </Grid>
                         </Border>
-                        <Border Grid.Row="1" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
+                        <Border x:Name="PublicKeyWrapper" Grid.Row="1" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="1">
                             <!--CardBody-->
-                            <TextBox x:Name="PublicKeyBox" Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.PublickKey}" TextWrapping="Wrap" BorderThickness="0" GotFocus="OnPublicKeyTextBox_GetFocus" AcceptsTab="True" MouseDoubleClick="OnPublicKeyTextBox_GetFocus" Background="Transparent" AllowDrop="True" PreviewDrop="PublicKeyBox_Drop" PreviewDragEnter="PublicKeyBox_DragEnter" PreviewDragOver="PublicKeyBox_PreviewDragOver" PreviewDragLeave="PublicKeyBox_PreviewDragLeave" />
-                        </Border>
-                        <Border Visibility="{Binding ViewModel.PublickKeyTypeVisible}" Grid.Row="2" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
-                            <!--CardFooter-->
-                            <TextBlock Padding="8" Text="{Binding ViewModel.PublickKeyType}" FontSize="12" Foreground="#FF929292"/>
+                            <TextBox x:Name="PublicKeyBox" Height="200" Padding="8" FontSize="12" Text="{Binding ViewModel.PublickKey}" TextWrapping="Wrap" BorderThickness="0" GotFocus="OnPublicKeyTextBox_GetFocus" AcceptsTab="True" MouseDoubleClick="OnPublicKeyTextBox_GetFocus" Background="Transparent" AllowDrop="True" PreviewDrop="PublicKeyBox_Drop" PreviewDragEnter="PublicKeyBox_DragEnter" PreviewDragOver="PublicKeyBox_PreviewDragOver" PreviewDragLeave="PublicKeyBox_PreviewDragLeave" />
                         </Border>
                     </Grid>
                 </Border>
-                <Border x:Name="PrivateKeyWrapper" Grid.Column="1" CornerRadius="0" Margin="5,0,0,0" BorderThickness="1" BorderBrush="#FFF1F1F1">
+                <Border Grid.Column="1" CornerRadius="0" Margin="5,0,0,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -89,26 +94,92 @@
                             <Grid>
                                 <!--CardHeader-->
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                     <ColumnDefinition Width="120"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Height="32" Padding="8" TextWrapping="Wrap" Text="私钥" FontSize="14" FontWeight="Bold"/>
-                                <Grid Grid.Column="1" HorizontalAlignment="Right">
-                                    <ui:Button  BorderThickness="1" CornerRadius="6" Content="读取文件" Height="32" Icon="{ui:SymbolIcon FolderOpen24}" Click="PickUp_PrivateKey_Click" FontSize="12" />
+                                <Border Grid.Column="0" Height="32" Width="42px" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                    <TextBlock Text="私钥" Foreground="#FFAD541D" FontSize="16" FontWeight="Bold" LineStackingStrategy="BlockLineHeight" LineHeight="28" />
+                                </Border>
+                                <Border Grid.Column="1" Height="32" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="0" Visibility="{Binding ViewModel.PrivateKeyTypeVisible}">
+                                    <Border CornerRadius="4" Height="24" Margin="0,2" Padding="8, 2" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Background="#FFAD541D">
+                                        <Label Content="{Binding ViewModel.PrivateKeyType}" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" />
+                                    </Border>
+                                </Border>
+                                <Grid Grid.Column="2" HorizontalAlignment="Right">
+                                    <ui:Button  BorderThickness="1" CornerRadius="0" Content="读取文件" Height="32" Icon="{ui:SymbolIcon FolderOpen24}" Click="PickUp_PrivateKey_Click" FontSize="12" />
                                 </Grid>
                             </Grid>
                         </Border>
-                        <Border Grid.Row="1" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
+                        <Border x:Name="PrivateKeyWrapper" Grid.Row="1" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="1">
                             <!--CardBody-->
-                            <TextBox x:Name="PrivateKeyBox" Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.PrivateKey}" TextWrapping="Wrap" BorderThickness="0" GotFocus="OnPrivateKeyTextBox_GetFocus" AcceptsTab="True" MouseDoubleClick="OnPrivateKeyTextBox_GetFocus" Background="Transparent" AllowDrop="True"  PreviewDrop="PrivateKeyBox_Drop" PreviewDragEnter="PrivateKeyBox_DragEnter" PreviewDragOver="PrivateKeyBox_PreviewDragOver" PreviewDragLeave="PrivateKeyBox_PreviewDragLeave"/>
-                        </Border>
-                        <Border Visibility="{Binding ViewModel.PrivateKeyTypeVisible}" Grid.Row="2" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
-                            <!--CardFooter-->
-                            <TextBlock Padding="8" Text="{Binding ViewModel.PrivateKeyType}" FontSize="12" Foreground="#FF929292"/>
+                            <TextBox x:Name="PrivateKeyBox" Height="200" Padding="8" FontSize="12" Text="{Binding ViewModel.PrivateKey}" TextWrapping="Wrap" BorderThickness="0" GotFocus="OnPrivateKeyTextBox_GetFocus" AcceptsTab="True" MouseDoubleClick="OnPrivateKeyTextBox_GetFocus" Background="Transparent" AllowDrop="True"  PreviewDrop="PrivateKeyBox_Drop" PreviewDragEnter="PrivateKeyBox_DragEnter" PreviewDragOver="PrivateKeyBox_PreviewDragOver" PreviewDragLeave="PrivateKeyBox_PreviewDragLeave"/>
                         </Border>
                     </Grid>
                 </Border>
             </Grid>
         </Border>
+        <Grid Grid.Row="1" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="42*"></ColumnDefinition>
+                <ColumnDefinition Width="16*"></ColumnDefinition>
+                <ColumnDefinition Width="42*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" BorderBrush="#dee2e6" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="36"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0"  Background="#7ab8fb" BorderBrush="#dee2e6" BorderThickness="0,0,0,1">
+                        <TextBlock Text="原文" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                    </Border>
+                    <TextBox Grid.Row="1" x:Name="OrginalTextBox" Height="180" Padding="8" FontSize="12" Text="{Binding ViewModel.OrginalText, Mode=TwoWay}" TextWrapping="Wrap" BorderThickness="0" AcceptsTab="True" Background="Transparent" Foreground="#FF808CA4" FocusableChanged="OrginalTextBox_FocusableChanged" />
+                </Grid>
+            </Border>
+            <Border Grid.Column="1">
+                <Grid HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="42"></RowDefinition>
+                        <RowDefinition Height="42"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="42"></RowDefinition>
+                        <RowDefinition Height="42"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" VerticalAlignment="Top">
+                        <ui:Button BorderThickness="1" CornerRadius="0" Content="公钥加密" Height="32" FontSize="12" Background="#CC52CC6F" PressedBackground="#FF52cc6f" MouseOverBackground="#EE52CC6F" Click="PublicKeyEncrypt_Click" />
+                    </Border>
+                    <Border Grid.Row="1" VerticalAlignment="Top">
+                        <ui:Button BorderThickness="1" CornerRadius="0" Content="私钥解密" Height="32" FontSize="12" Background="#CCff9959" PressedBackground="#FFff9959"  MouseOverBackground="#EEff9959" Click="PrivateKeyDecrypt_Click"  />
+                    </Border>
+                    <Border Grid.Row="2" Background="AliceBlue" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button Height="42" Cursor="Hand">
+                            <ui:SymbolIcon
+                                Grid.Row="0"
+                                FontSize="28"
+                                Symbol="ArrowLeft28" />
+                        </Button>
+                    </Border>
+                    <Border Grid.Row="3" VerticalAlignment="Bottom">
+                        <ui:Button BorderThickness="1" CornerRadius="0" Content="私钥加密" Height="32" FontSize="12" Background="#CCff9959" PressedBackground="#FFff9959"  MouseOverBackground="#EEff9959" Click="PrivateKeyEncrypt_Click"  />
+                    </Border>
+                    <Border Grid.Row="4" VerticalAlignment="Bottom">
+                        <ui:Button BorderThickness="1" CornerRadius="0" Content="公钥解密" Height="32" FontSize="12" Background="#CC52CC6F" PressedBackground="#FF52cc6f" MouseOverBackground="#EE52CC6F" Click="PublicKeyDecrypt_Click"  />
+                    </Border>
+                </Grid>
+            </Border>
+            <Border Grid.Column="2" BorderBrush="#dee2e6" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="36"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0"  Background="#e0acef" BorderBrush="#dee2e6" BorderThickness="0,0,0,1">
+                        <TextBlock Text="结果" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                    </Border>
+                    <TextBox Grid.Row="1" x:Name="ResultTextBox" Height="180" Padding="8" FontSize="12" Text="{Binding ViewModel.ResultText, Mode=TwoWay}" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" IsReadOnly="True" Foreground="#FF8980A4" />
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Page>

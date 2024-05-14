@@ -1,6 +1,7 @@
 # MHalo.CoreFx.RsaToolBox
 
 ![HomePage](./Assets/screenshot/home-page.jpg)  
+![CryptPage](./Assets/screenshot/crypt-page.jpg)  
 
 
 ## 🟢  Features
@@ -14,5 +15,7 @@
 <img src="https://user-images.githubusercontent.com/19524115/224662425-0b5223ca-e775-4331-8250-0779fd02c640.JPG" height="320">
 
 ## 🔵 更新日志
+- 2024-05-14
+完成密钥加密/解密界面及功能
 - 2024-05-13
 创建项目，完成密钥生成界面及功能

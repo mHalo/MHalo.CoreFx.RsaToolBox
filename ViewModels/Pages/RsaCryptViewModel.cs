@@ -8,6 +8,7 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
 {
     public partial class RsaCryptViewModel : ObservableObject
     {
+        public static string OrginalTextPlaceHolder = "请在此处输入要加密/解密的原文";
         private string _publickKey;
         private string _privateKey;
 
@@ -20,12 +21,19 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
         [ObservableProperty]
         private Visibility _privateKeyTypeVisible;
 
+
+        [ObservableProperty]
+        private string _orginalText;
+        [ObservableProperty]
+        private string _resultText;
+
         public RsaCryptViewModel()
         {
             _publickKey = "此处粘贴或点击右上角读取文件";
             _privateKey = "此处粘贴或点击右上角读取文件";
             _publickKeyTypeVisible = Visibility.Hidden;
             _privateKeyTypeVisible = Visibility.Hidden;
+            _orginalText = OrginalTextPlaceHolder;
         }
 
         public string PublickKey

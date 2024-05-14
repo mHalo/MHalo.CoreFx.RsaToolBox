@@ -7,11 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
-    Width="900"
-    Height="600"
+    Width="960"
+    Height="640"
     d:DataContext="{d:DesignInstance local:MainWindow, IsDesignTimeCreatable=True}"
-    d:DesignWidth="900"
-    d:DesignHeight="600"
+    d:DesignWidth="960"
+    d:DesignHeight="640"
     ExtendsContentIntoTitleBar="True"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
@@ -54,7 +54,7 @@
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
 
-        <ContentPresenter x:Name="RootContentDialog" Grid.Row="0" Height="600" Margin="0,48,0,0" Grid.ColumnSpan="2" />
+        <ContentPresenter x:Name="RootContentDialog" Grid.Row="0" Height="640" Margin="0,48,0,0" Grid.ColumnSpan="2" />
 
     </Grid>
 </ui:FluentWindow>
