@@ -53,6 +53,11 @@ namespace MHalo.CoreFx.RsaToolBox
                 services.AddSingleton<RsaKeyGenerateViewModel>();
                 services.AddSingleton<RsaCryptPage>();
                 services.AddSingleton<RsaCryptViewModel>();
+
+
+
+
+                services.AddSingleton<SettingsPage>();
                 services.AddSingleton<SettingsViewModel>();
             }).Build();
 

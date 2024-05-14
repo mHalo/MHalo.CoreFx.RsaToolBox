@@ -6,7 +6,7 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Windows
     public partial class MainWindowViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string _applicationTitle = "RSA 工具箱";
+        private string _applicationTitle = "RSA 工具箱 @MHalo";
 
         [ObservableProperty]
         private ObservableCollection<object> _menuItems = new()
@@ -34,12 +34,12 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Windows
         [ObservableProperty]
         private ObservableCollection<object> _footerMenuItems = new()
         {
-            //new NavigationViewItem()
-            //{
-            //    Content = "Settings",
-            //    Icon = new SymbolIcon { Symbol = SymbolRegular.Settings24 },
-            //    TargetPageType = typeof(Views.Pages.SettingsPage)
-            //}
+            new NavigationViewItem()
+            {
+                Content = "Settings",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Settings24 },
+                TargetPageType = typeof(Views.Pages.SettingsPage)
+            }
         };
 
         [ObservableProperty]
