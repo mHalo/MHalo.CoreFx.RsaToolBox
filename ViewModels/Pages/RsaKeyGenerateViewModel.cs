@@ -18,10 +18,12 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
 
         private RSAKeyType _rsaKeyType;
         private int _rsaKeyTypeSelectedIndex;
-        private RSAKeyPair _rsaKey = new (DefaultKeyTipText, DefaultKeyTipText);
+        private RSAKeyPair _rsaKey = new ("", "");
         private string _rsaLocalFolder;
         private bool _saveToLocal;
         private int _rsaKeyFormat;
+        [ObservableProperty]
+        private int _rsaKeyLength;
 
         public RsaKeyGenerateViewModel()
         {
@@ -105,8 +107,7 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
         public bool CanExportXmlFormat => RSAKeyType.Xml.Equals(_rsaKeyType);
         public bool CanOpenRSAFolder => SaveToLocal && !string.IsNullOrEmpty(RsaLocalFolder);
         public string KeyGenerateTips => IsGenerateKeyValid ? $"密钥格式：{RsaKeyType}" : "";
-        public static string DefaultKeyTipText => "点击上方按钮生成";
-        public bool IsGenerateKeyValid => !(DefaultKeyTipText.Equals(RSAKey.PublicKey) || DefaultKeyTipText.Equals(RSAKey.PrivateKey));
+        public bool IsGenerateKeyValid => !(string.IsNullOrEmpty(RSAKey.PublicKey) && string.IsNullOrEmpty(RSAKey.PrivateKey));
         public Visibility RsaKeyTypeVisible => IsGenerateKeyValid ? Visibility.Visible : Visibility.Hidden;
         public SolidColorBrush KeyContentColor => IsGenerateKeyValid ? new SolidColorBrush(Color.FromArgb(255, 50, 50, 50)) : new SolidColorBrush(Color.FromArgb(255, 215, 215, 215));
 
@@ -115,10 +116,16 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
         private void OnGenderateKey()
         {
             string publicKey = string.Empty, privateKey = string.Empty, suffix = string.Empty;
+            int keyLength = RsaKeyLength switch
+            {
+                0 => 1024,
+                1 => 2048,
+                _ => 2048
+            };
             switch (_rsaKeyType)
             {
                 case RSAKeyType.Pkcs1:
-                    RSAHelper.ExportPkcs1Key(1024, out publicKey, out privateKey, _rsaKeyFormat == 1);
+                    RSAHelper.ExportPkcs1Key(keyLength, out publicKey, out privateKey, _rsaKeyFormat == 1);
                     suffix = _rsaKeyFormat switch
                     {
                         1 => "pkcs1.pem",
@@ -126,7 +133,7 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
                     };
                     break;
                 case RSAKeyType.Pkcs8:
-                    RSAHelper.ExportPkcs8Key(1024, out publicKey, out privateKey, _rsaKeyFormat == 1);
+                    RSAHelper.ExportPkcs8Key(keyLength, out publicKey, out privateKey, _rsaKeyFormat == 1);
                     suffix = _rsaKeyFormat switch
                     {
                         1 => "pkcs8.pem",
@@ -134,7 +141,8 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
                     };
                     break;
                 case RSAKeyType.Xml:
-                    RSAHelper.ExportXMLKey(1024, out publicKey, out privateKey);
+                    RSAHelper.ExportXMLKey(keyLength, out publicKey, out privateKey);
+
                     suffix = _rsaKeyFormat switch
                     {
                         2 => "xml",
@@ -145,7 +153,7 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
 
             if (SaveToLocal)
             {
-                string pairPrefix = RandomHelper.RandomToken(6, true);
+                string pairPrefix = RandomHelper.RandomToken(6, true) + $"-{_rsaKeyType}";
                 string parentFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), $"rsa-keys\\{pairPrefix}");
                 string publicKeyFilePath = Path.Combine(parentFolder, $"publicKey.{suffix}");
                 string privateKeyFilePath = Path.Combine(parentFolder, $"privateKey.{suffix}");

@@ -8,48 +8,25 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
 {
     public partial class RsaCryptViewModel : ObservableObject
     {
-        public static string OrginalTextPlaceHolder = "请在此处输入要加密/解密的原文";
-        private string _publickKey;
+        private string _publicKey;
         private string _privateKey;
-
-        [ObservableProperty]
-        private string _publickKeyType;
-        [ObservableProperty]
-        private string _privateKeyType;
-        [ObservableProperty]
-        private Visibility _publickKeyTypeVisible;
-        [ObservableProperty]
-        private Visibility _privateKeyTypeVisible;
-
-
-        [ObservableProperty]
-        private string _orginalText;
-        [ObservableProperty]
-        private string _resultText;
-
-        public RsaCryptViewModel()
-        {
-            _publickKey = "此处粘贴或点击右上角读取文件";
-            _privateKey = "此处粘贴或点击右上角读取文件";
-            _publickKeyTypeVisible = Visibility.Hidden;
-            _privateKeyTypeVisible = Visibility.Hidden;
-            _orginalText = OrginalTextPlaceHolder;
-        }
+        private RSAKeyType? _publicKeyType;
+        private RSAKeyType? _privateKeyType;
 
         public string PublickKey
         {
-            get => _publickKey;
+            get => _publicKey;
             set
             {
-                if (string.IsNullOrEmpty(value))
+                _publicKey = value;
+                if(RSAKeyValidator.IsValidPublicKey(_publicKey, out var keyType))
                 {
-                    _publickKey = "此处粘贴或点击右上角读取文件";
-                }
-                else
-                {
-                    _publickKey = value;
+                    _publicKeyType = keyType;
                 }
                 OnPropertyChanged(nameof(PublickKey));
+                OnPropertyChanged(nameof(PublicKeyType));
+                OnPropertyChanged(nameof(PublicKeyTypeVisible));
+                OnPropertyChanged(nameof(PublicKeyEncryptEnabled));
             }
         }
         public string PrivateKey
@@ -57,17 +34,75 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
             get => _privateKey;
             set
             {
-                if (string.IsNullOrEmpty(value))
+                _privateKey = value;
+                if (RSAKeyValidator.IsValidPrivateKey(PrivateKey, out var keyType))
                 {
-                    _privateKey = "此处粘贴或点击右上角读取文件";
-                }
-                else
-                {
-                    _privateKey = value;
+                    _privateKeyType = keyType;
                 }
                 OnPropertyChanged(nameof(PrivateKey));
+                OnPropertyChanged(nameof(PrivateKeyType));
+                OnPropertyChanged(nameof(PrivateKeyTypeVisible));
+                OnPropertyChanged(nameof(PrivateKeyEncryptEnabled));
             }
         }
+
+
+        public Visibility PublicKeyTypeVisible => PublicKeyType is not null ? Visibility.Visible : Visibility.Hidden;
+        public Visibility PrivateKeyTypeVisible => PrivateKeyType is not null ? Visibility.Visible : Visibility.Hidden;
+
+        public RSAKeyType? PublicKeyType
+        {
+            get => _publicKeyType;
+            set
+            {
+                _publicKeyType = value;
+                OnPropertyChanged(nameof(PublicKeyType));
+            }
+        }
+        public RSAKeyType? PrivateKeyType
+        {
+            get => _privateKeyType;
+            set
+            {
+                _privateKeyType = value;
+                OnPropertyChanged(nameof(PrivateKeyType));
+            }
+        }
+
+        private string _orginalText;
+        private string _resultText;
+
+        public string OrginalText
+        {
+            get => _orginalText;
+            set
+            {
+                _orginalText = value;
+                OnPropertyChanged(nameof(OrginalText));
+                OnPropertyChanged(nameof(PublicKeyEncryptEnabled));
+                OnPropertyChanged(nameof(PrivateKeyEncryptEnabled));
+            }
+        }
+        public string ResultText
+        {
+            get => _resultText;
+            set
+            {
+                _resultText = value;
+                OnPropertyChanged(nameof(ResultText));
+            }
+        }
+
+
+        public bool PublicKeyEncryptEnabled => !string.IsNullOrWhiteSpace(_publicKey) && !string.IsNullOrWhiteSpace(_orginalText);
+        public bool PrivateKeyEncryptEnabled => !string.IsNullOrWhiteSpace(_privateKey) && !string.IsNullOrWhiteSpace(_orginalText);
+
+        public RsaCryptViewModel()
+        {
+            
+        }
+
+        
 
     }
 }

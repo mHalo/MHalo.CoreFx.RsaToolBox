@@ -12,6 +12,7 @@
     d:DataContext="{d:DesignInstance local:MainWindow, IsDesignTimeCreatable=True}"
     d:DesignWidth="960"
     d:DesignHeight="640"
+    MinWidth="960"
     ExtendsContentIntoTitleBar="True"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"

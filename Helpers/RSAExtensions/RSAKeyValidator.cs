@@ -1,25 +1,24 @@
 ﻿using MHalo.CoreFx.Helper;
-using Org.BouncyCastle.Crypto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Org.BouncyCastle.Asn1.X9;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
+using static MHalo.CoreFx.Helper.RSAHelper;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace MHalo.CoreFx.RsaToolBox.Helpers.RSAExtensions
 {
     public class RSAKeyValidator
     {
-        public static bool IsValidPublicKey(string publicKey, out RSAKeyType keyType)
+        public static bool IsValidPublicKey(string publicKey, out RSAKeyType? keyType)
         {
-            RSACryptoServiceProvider rsaPrivateKey = new RSACryptoServiceProvider();
+            keyType = null;
+            publicKey = PemFormatUtil.RemoveFormat(publicKey);
+            RSACryptoServiceProvider rsaPrivateKey = new ();
             try
             {
-                rsaPrivateKey.ImportRSAPublicKey(Convert.FromBase64String(publicKey), out _);
+                rsaPrivateKey.ImportPublicKey(RSAKeyType.Pkcs1, publicKey);
                 keyType = RSAKeyType.Pkcs1;
                 return rsaPrivateKey.PublicOnly;
             }
@@ -27,7 +26,7 @@ namespace MHalo.CoreFx.RsaToolBox.Helpers.RSAExtensions
             {
                 try
                 {
-                    rsaPrivateKey.ImportPkcs8PublicKey(Convert.FromBase64String(publicKey));
+                    rsaPrivateKey.ImportPublicKey(RSAKeyType.Pkcs8, publicKey);
                     keyType = RSAKeyType.Pkcs8;
                     return rsaPrivateKey.PublicOnly;
                 }
@@ -35,24 +34,34 @@ namespace MHalo.CoreFx.RsaToolBox.Helpers.RSAExtensions
                 {
                     try
                     {
-                        rsaPrivateKey.ImportXmlPublicKey(publicKey);
-                        keyType = RSAKeyType.Xml;
-                        return rsaPrivateKey.PublicOnly;
+                        XmlDocument xmlDoc = new XmlDocument();
+                        xmlDoc.LoadXml(publicKey);
+                        if (xmlDoc.DocumentElement!.Name.Equals("RSAKeyValue"))
+                        {
+                            var rootNode = xmlDoc.DocumentElement!;
+                            // 检查是否包含Modulus和Exponent元素，这两个是公钥和私钥都必须有的
+                            XmlNode? modulusNode = rootNode.SelectSingleNode("Modulus");
+                            XmlNode? exponentNode = rootNode.SelectSingleNode("Exponent");
+                            if (modulusNode != null && exponentNode != null && rootNode.ChildNodes.Count == 2)
+                            {
+                                keyType = RSAKeyType.Xml;
+                                return true;
+                            }
+                        }
                     }
-                    catch
-                    {
-                        keyType = RSAKeyType.Pkcs1;
-                        return false;
-                    }
+                    catch { }
+                    return false;
                 }
             }
         }
-        public static bool IsValidPrivateKey(string privateKey, out RSAKeyType keyType)
+        public static bool IsValidPrivateKey(string privateKey, out RSAKeyType? keyType)
         {
-            RSACryptoServiceProvider rsaPrivateKey = new RSACryptoServiceProvider();
+            keyType = null;
+            privateKey = PemFormatUtil.RemoveFormat(privateKey);
+            RSACryptoServiceProvider rsaPrivateKey = new ();
             try
             {
-                rsaPrivateKey.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out _);
+                rsaPrivateKey.ImportPrivateKey(RSAKeyType.Pkcs1, privateKey);
                 keyType = RSAKeyType.Pkcs1;
                 return !rsaPrivateKey.PublicOnly;
             }
@@ -60,7 +69,7 @@ namespace MHalo.CoreFx.RsaToolBox.Helpers.RSAExtensions
             {
                 try
                 {
-                    rsaPrivateKey.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
+                    rsaPrivateKey.ImportPrivateKey(RSAKeyType.Pkcs8, privateKey);
                     keyType = RSAKeyType.Pkcs8;
                     return !rsaPrivateKey.PublicOnly;
                 }
@@ -68,15 +77,12 @@ namespace MHalo.CoreFx.RsaToolBox.Helpers.RSAExtensions
                 {
                     try
                     {
-                        rsaPrivateKey.ImportXmlPrivateKey(privateKey);
+                        RSAParameters rsaParams = XMLRSAKeyManager.GetRSAPrivateParameters(privateKey);
                         keyType = RSAKeyType.Xml;
-                        return !rsaPrivateKey.PublicOnly;
+                        return true;
                     }
-                    catch
-                    {
-                        keyType = RSAKeyType.Pkcs1;
-                        return false;
-                    }
+                    catch { }
+                    return false;
                 }
             }
         }

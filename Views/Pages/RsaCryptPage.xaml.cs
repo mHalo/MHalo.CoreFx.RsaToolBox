@@ -3,9 +3,11 @@ using MHalo.CoreFx.RsaToolBox.Helpers.RSAExtensions;
 using MHalo.CoreFx.RsaToolBox.ViewModels.Pages;
 using Microsoft.Win32;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
@@ -26,41 +28,57 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             DataContext = this;
             snackbarService = _snackbarService;
             InitializeComponent();
+            DataObject.AddPastingHandler(PublicKeyBox, PublicKeyBox_Pasting);
+            DataObject.AddPastingHandler(PrivateKeyBox, PrivateKeyBox_Pasting);
         }
 
-        #region  公钥相关处理程序
-        private async void PickUp_PublicKey_Click(object sender, RoutedEventArgs e)
+        #region 私有方法
+        /// <summary>
+        /// 打开密钥文件
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private bool OpenDialogPickKeyFile(out string fileName)
         {
+            fileName = string.Empty;
             OpenFileDialog openFileDialog = new()
             {
                 //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
                 RestoreDirectory = true,
                 Filter = "All files (*.*)|*.*"
             };
-
             if (openFileDialog.ShowDialog() != true)
             {
-                return;
+                return false;
             }
-
             if (!File.Exists(openFileDialog.FileName))
+            {
+                return false;
+            }
+            fileName = openFileDialog.FileName;
+            return true;
+        }
+
+        #endregion
+
+
+        #region  公钥相关处理程序
+        private async void PickUp_PublicKey_Click(object sender, RoutedEventArgs e)
+        {
+            if(!OpenDialogPickKeyFile(out string keyFile))
             {
                 return;
             }
             try
             {
-                string content = await File.ReadAllTextAsync(openFileDialog.FileName);
+                string content = await File.ReadAllTextAsync(keyFile);
                 if(RSAKeyValidator.IsValidPublicKey(content, out var publicKeyType))
                 {
                     ViewModel.PublickKey = content;
-                    ViewModel.PublickKeyType = $"{publicKeyType}";
-                    ViewModel.PublickKeyTypeVisible = Visibility.Visible;
                 }
                 else
                 {
                     ViewModel.PublickKey = string.Empty;
-                    ViewModel.PublickKeyType = string.Empty;
-                    ViewModel.PublickKeyTypeVisible = Visibility.Hidden;
                     snackbarService.Show(
                         "读取失败",
                         "非有效的公钥字符",
@@ -84,8 +102,8 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
         }
         private void OnPublicKeyTextBox_GetFocus(object sender, RoutedEventArgs e)
         {
-            e.Handled = true;
             PublicKeyBox.SelectAll();
+            e.Handled = true;
         }
         private void PublicKeyBox_PreviewDragOver(object sender, DragEventArgs e)
         {
@@ -143,14 +161,10 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                             if (RSAKeyValidator.IsValidPublicKey(content, out var publicKeyType))
                             {
                                 ViewModel.PublickKey = content;
-                                ViewModel.PublickKeyType = $"{publicKeyType}";
-                                ViewModel.PublickKeyTypeVisible = Visibility.Visible;
                             }
                             else
                             {
                                 ViewModel.PublickKey = string.Empty;
-                                ViewModel.PublickKeyType = string.Empty;
-                                ViewModel.PublickKeyTypeVisible = Visibility.Hidden;
                                 snackbarService.Show(
                                     "读取失败",
                                     "非有效的公钥字符",
@@ -188,7 +202,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             {
                 snackbarService.Show(
                     "读取失败",
-                    "非有效的公钥字符",
+                    "非读取到有效的公钥字符",
                     ControlAppearance.Caution,
                     new SymbolIcon(SymbolRegular.Fluent24),
                     TimeSpan.FromSeconds(5)
@@ -197,41 +211,59 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             PublicKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 241, 241, 241));
             PublicKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
-        #endregion
 
-        #region 私钥相关处理程序
-        private async void PickUp_PrivateKey_Click(object sender, RoutedEventArgs e)
+        private void PublicKeyBox_Pasting(object sender, DataObjectPastingEventArgs e)
         {
-            OpenFileDialog openFileDialog = new()
-            {
-                //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
-                RestoreDirectory = true,
-                Filter = "All files (*.*)|*.*"
-            };
-
-            if (openFileDialog.ShowDialog() != true)
+            var isText = e.SourceDataObject.GetDataPresent(DataFormats.UnicodeText, true);
+            if (!isText)
             {
                 return;
             }
-
-            if (!File.Exists(openFileDialog.FileName))
+            var text = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
+            if (text == null)
             {
                 return;
             }
             try
             {
-                string content = await File.ReadAllTextAsync(openFileDialog.FileName);
+                string content = text!;
+                if (RSAKeyValidator.IsValidPublicKey(content, out var publicKeyType))
+                {
+                    ViewModel.PublickKey = content;
+                }
+                else
+                {
+                    snackbarService.Show(
+                        "读取失败",
+                        "非读取到有效的公钥字符",
+                        ControlAppearance.Caution,
+                        new SymbolIcon(SymbolRegular.Fluent24),
+                        TimeSpan.FromSeconds(5)
+                    );
+                }
+            }
+            catch { }
+            e.CancelCommand();
+        }
+        #endregion
+
+        #region 私钥相关处理程序
+        private async void PickUp_PrivateKey_Click(object sender, RoutedEventArgs e)
+        {
+            if (!OpenDialogPickKeyFile(out string keyFile))
+            {
+                return;
+            }
+            try
+            {
+                string content = await File.ReadAllTextAsync(keyFile);
                 if (RSAKeyValidator.IsValidPrivateKey(content, out var privateKeyType))
                 {
                     ViewModel.PrivateKey = content;
-                    ViewModel.PrivateKeyType = $"{privateKeyType}";
-                    ViewModel.PrivateKeyTypeVisible = Visibility.Visible;
                 }
                 else
                 {
                     ViewModel.PrivateKey = string.Empty;
-                    ViewModel.PrivateKeyType = string.Empty;
-                    ViewModel.PrivateKeyTypeVisible = Visibility.Hidden;
                     snackbarService.Show(
                         "读取失败",
                         "非有效的私钥字符",
@@ -292,7 +324,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                     {
                         snackbarService.Show(
                             "读取失败",
-                            "非有效的文件",
+                            "非读取到有效的私钥字符",
                             ControlAppearance.Caution,
                             new SymbolIcon(SymbolRegular.Fluent24),
                             TimeSpan.FromSeconds(5)
@@ -313,14 +345,10 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                             if (RSAKeyValidator.IsValidPrivateKey(content, out var privateKeyType))
                             {
                                 ViewModel.PrivateKey = content;
-                                ViewModel.PrivateKeyType = $"{privateKeyType}";
-                                ViewModel.PrivateKeyTypeVisible = Visibility.Visible;
                             }
                             else
                             {
                                 ViewModel.PrivateKey = string.Empty;
-                                ViewModel.PrivateKeyType = string.Empty;
-                                ViewModel.PrivateKeyTypeVisible = Visibility.Hidden;
                                 snackbarService.Show(
                                     "读取失败",
                                     "非有效的私钥字符",
@@ -367,6 +395,39 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             PrivateKeyWrapper.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 241, 241, 241));
             PrivateKeyWrapper.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
+
+        private void PrivateKeyBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            var isText = e.SourceDataObject.GetDataPresent(DataFormats.UnicodeText, true);
+            if (!isText)
+            {
+                return;
+            }
+            if (e.SourceDataObject.GetData(DataFormats.UnicodeText) is not string text)
+            {
+                return;
+            }
+            try
+            {
+                string content = text!;
+                if (RSAKeyValidator.IsValidPrivateKey(content, out var privateKeyType))
+                {
+                    ViewModel.PrivateKey = content;
+                }
+                else
+                {
+                    snackbarService.Show(
+                        "读取失败",
+                        "非读取到有效的私钥字符",
+                        ControlAppearance.Caution,
+                        new SymbolIcon(SymbolRegular.Fluent24),
+                        TimeSpan.FromSeconds(5)
+                    );
+                }
+            }
+            catch { }
+            e.CancelCommand();
+        }
         #endregion
 
 
@@ -394,15 +455,43 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 );
                 return;
             }
+
+            try
+            {
+                if (ViewModel.PublicKeyType.HasValue)
+                {
+                    ViewModel.ResultText = RSAHelper.Encrypt(ViewModel.PublicKeyType.Value, ViewModel.OrginalText, ViewModel.PublickKey);
+                }
+                else
+                {
+                    snackbarService.Show(
+                        "加密失败",
+                        "未知异常",
+                        ControlAppearance.Caution,
+                        new SymbolIcon(SymbolRegular.Fluent24),
+                        TimeSpan.FromSeconds(5)
+                    );
+                }
+            }
+            catch(Exception ex)
+            {
+                snackbarService.Show(
+                    "加密失败",
+                    ex.Message,
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+            }
         }
-        private void PublicKeyDecrypt_Click(object sender, RoutedEventArgs e)
+        private void PrivateKeyDecrypt_Click(object sender, RoutedEventArgs e)
         {
 
-            if (string.IsNullOrEmpty(ViewModel.PublickKey))
+            if (string.IsNullOrEmpty(ViewModel.PrivateKey))
             {
                 snackbarService.Show(
                     "解密失败",
-                    "未识别到有效的公钥字符",
+                    "未识别到有效的私钥字符",
                     ControlAppearance.Caution,
                     new SymbolIcon(SymbolRegular.Fluent24),
                     TimeSpan.FromSeconds(5)
@@ -419,7 +508,41 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 );
                 return;
             }
+            try
+            {
+                if (ViewModel.PrivateKeyType.HasValue)
+                {
+                    ViewModel.ResultText = RSAHelper.Decrypt(ViewModel.PrivateKeyType.Value, ViewModel.OrginalText, ViewModel.PrivateKey);
+                }
+                else
+                {
+                    snackbarService.Show(
+                        "加密失败",
+                        "未知异常",
+                        ControlAppearance.Caution,
+                        new SymbolIcon(SymbolRegular.Fluent24),
+                        TimeSpan.FromSeconds(5)
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                snackbarService.Show(
+                    "解密失败",
+                    ex.Message,
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+            }
         }
+        private void ExchangeOrginalTextAndResultText(object sender, RoutedEventArgs e)
+        {
+            ViewModel.OrginalText = ViewModel.ResultText;
+            ViewModel.ResultText = string.Empty;
+        }
+        
+
         private void PrivateKeyEncrypt_Click(object sender, RoutedEventArgs e)
         {
 
@@ -445,7 +568,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 return;
             }
         }
-        private void PrivateKeyDecrypt_Click(object sender, RoutedEventArgs e)
+        private void PublicKeyDecrypt_Click(object sender, RoutedEventArgs e)
         {
 
             if (string.IsNullOrEmpty(ViewModel.PublickKey))
@@ -471,9 +594,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             }
         }
 
-        private void OrginalTextBox_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-             
-        }
+
+
     }
 }

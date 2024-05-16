@@ -19,13 +19,19 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Windows
             },
             new NavigationViewItem()
             {
-                Content = "RSA加密",
+                Content = "密钥格式转换",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Checkmark24 },
+                TargetPageType = typeof(Views.Pages.RsaCryptPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "加密/解密",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.LockClosed24 },
                 TargetPageType = typeof(Views.Pages.RsaCryptPage)
             },
             new NavigationViewItem()
             {
-                Content = "RSA验签",
+                Content = "签名/验签",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Checkmark24 },
                 TargetPageType = typeof(Views.Pages.RsaCryptPage)
             }

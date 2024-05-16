@@ -23,25 +23,32 @@
         <ui:Card Grid.Row="0" Background="#FFF1F1F1" Padding="12,8,12,8" Margin="0,0,0,20">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"></ColumnDefinition>
-                    <ColumnDefinition Width="150"></ColumnDefinition>
-                    <ColumnDefinition Width="100"></ColumnDefinition>
-                    <ColumnDefinition Width="150"></ColumnDefinition>
+                    <ColumnDefinition Width="72"></ColumnDefinition>
+                    <ColumnDefinition Width="120"></ColumnDefinition>
+                    <ColumnDefinition Width="72"></ColumnDefinition>
+                    <ColumnDefinition Width="120"></ColumnDefinition>
+                    <ColumnDefinition Width="72"></ColumnDefinition>
+                    <ColumnDefinition Width="110"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="密钥类型：" VerticalAlignment="Center" Width="100" HorizontalAlignment="Left" />
-                <ComboBox Grid.Column="1" MinWidth="120" SelectedIndex="{Binding ViewModel.RsaKeyTypeSelectedIndex, Mode = TwoWay}"  HorizontalAlignment="Left" SelectionChanged="RsaKeyType_SelectionChanged">
+                <TextBlock Grid.Column="0" Text="密钥类型：" VerticalAlignment="Center" Width="72" HorizontalAlignment="Left" />
+                <ComboBox Grid.Column="1" MinWidth="100" SelectedIndex="{Binding ViewModel.RsaKeyTypeSelectedIndex, Mode = TwoWay}"  HorizontalAlignment="Left" SelectionChanged="RsaKeyType_SelectionChanged">
                     <ComboBoxItem Content="Pkcs1" IsSelected="True" />
                     <ComboBoxItem Content="Pkcs8" />
                     <ComboBoxItem Content="Xml" />
                 </ComboBox>
-                <TextBlock Grid.Column="2" Text="密钥格式：" VerticalAlignment="Center" Width="100" HorizontalAlignment="Left" />
-                <ComboBox Grid.Column="3" MinWidth="120" SelectedIndex="{Binding ViewModel.RsaKeyFormat, Mode = TwoWay}"  HorizontalAlignment="Left">
+                <TextBlock Grid.Column="2" Text="密钥格式：" VerticalAlignment="Center" Width="72" HorizontalAlignment="Left" />
+                <ComboBox Grid.Column="3" MinWidth="100" SelectedIndex="{Binding ViewModel.RsaKeyFormat, Mode = TwoWay}"  HorizontalAlignment="Left">
                     <ComboBoxItem Content="Txt" IsEnabled="{Binding ViewModel.CanExportTxtFormat}" IsSelected="True" />
                     <ComboBoxItem Content="Pem" IsEnabled="{Binding ViewModel.CanExportPemFormat}" />
                     <ComboBoxItem Content="Xml" IsEnabled="{Binding ViewModel.CanExportXmlFormat}" />
                 </ComboBox>
-                <ui:Button Grid.Column="4" Width="120" Content="生成密钥" Icon="{ui:SymbolIcon ArrowEnterLeft24}" HorizontalAlignment="Right" Appearance="Primary" Command="{Binding ViewModel.GenderateKeyCommand, Mode=OneWay}" />
+                <TextBlock Grid.Column="4" Text="密钥长度：" VerticalAlignment="Center" Width="72" HorizontalAlignment="Left" />
+                <ComboBox Grid.Column="5" MinWidth="100" SelectedIndex="{Binding ViewModel.RsaKeyLength, Mode = TwoWay}"  HorizontalAlignment="Left">
+                    <ComboBoxItem Content="1024" IsSelected="True" />
+                    <ComboBoxItem Content="2048" />
+                </ComboBox>
+                <ui:Button Grid.Column="6" Width="120" Content="生成密钥" Icon="{ui:SymbolIcon ArrowEnterLeft24}" HorizontalAlignment="Right" Appearance="Primary" Command="{Binding ViewModel.GenderateKeyCommand, Mode=OneWay}" />
             </Grid>
         </ui:Card>
         <!--密钥生成区域-->        
@@ -72,7 +79,7 @@
                     </Border>
                     <Border Grid.Row="1" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
                         <!--CardBody-->
-                        <TextBlock Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.RSAKey.PublicKey, Mode=OneWay}"  Foreground="{Binding Path=ViewModel.KeyContentColor, Mode=OneWay}" TextWrapping="Wrap" />
+                        <ui:TextBox x:Name="PublicKeyBox" Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.RSAKey.PublicKey, Mode=TwoWay}" TextWrapping="Wrap" Foreground="{Binding Path=ViewModel.KeyContentColor, Mode=OneWay}" PlaceholderText="点击上方按钮生成" IsReadOnly="True" Background="Transparent" PreviewMouseDoubleClick="PublicKeyBox_PreviewMouseDoubleClick" />
                     </Border>
                     <Border Visibility="{ Binding ViewModel.RsaKeyTypeVisible, Mode=OneWay}" Grid.Row="2" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
                         <!--CardFooter-->
@@ -102,7 +109,8 @@
                     </Border>
                     <Border Grid.Row="1" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
                         <!--CardBody-->
-                        <TextBlock Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.RSAKey.PrivateKey, Mode=OneWay}"  Foreground="{Binding Path=ViewModel.KeyContentColor, Mode=OneWay}" TextWrapping="Wrap" />
+                        <!--<TextBlock Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.RSAKey.PrivateKey, Mode=OneWay}"  Foreground="{Binding Path=ViewModel.KeyContentColor, Mode=OneWay}" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" />-->
+                        <ui:TextBox x:Name="PrivateKeyBox" Height="240" Padding="8" FontSize="12" Text="{Binding ViewModel.RSAKey.PrivateKey, Mode=TwoWay}" TextWrapping="Wrap" Foreground="{Binding Path=ViewModel.KeyContentColor, Mode=OneWay}" PlaceholderText="点击上方按钮生成" IsReadOnly="True" Background="Transparent" PreviewMouseDoubleClick="PrivateKeyBox_PreviewMouseDoubleClick" />   
                     </Border>
                     <Border Visibility="{ Binding ViewModel.RsaKeyTypeVisible, Mode=OneWay}" Grid.Row="2" Padding="6,4" BorderBrush="#FFF1F1F1" BorderThickness="0,1,0,0">
                         <!--CardFooter-->

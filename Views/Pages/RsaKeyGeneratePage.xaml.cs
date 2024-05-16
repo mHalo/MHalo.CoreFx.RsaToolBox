@@ -85,5 +85,17 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 _ = await uiMessageBox.ShowDialogAsync();
             }
         }
+
+        private void PublicKeyBox_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            PublicKeyBox.SelectAll();
+            e.Handled = true;
+        }
+
+        private void PrivateKeyBox_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            PrivateKeyBox.SelectAll();
+            e.Handled = true;
+        }
     }
 }

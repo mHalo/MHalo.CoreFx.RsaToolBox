@@ -10,7 +10,6 @@ namespace MHalo.CoreFx.Helper.RSAExtensions
     /// </summary>
     public static class EncryptExtensions
     {
-
         static readonly Dictionary<RSAEncryptionPadding, int> PaddingLimitDic = new()
         {
             [RSAEncryptionPadding.Pkcs1] = 11,
@@ -18,6 +17,9 @@ namespace MHalo.CoreFx.Helper.RSAExtensions
             [RSAEncryptionPadding.OaepSHA256] = 66,
             [RSAEncryptionPadding.OaepSHA384] = 98,
             [RSAEncryptionPadding.OaepSHA512] = 130,
+            [RSAEncryptionPadding.OaepSHA3_256] = 66,
+            [RSAEncryptionPadding.OaepSHA3_384] = 98,
+            [RSAEncryptionPadding.OaepSHA3_512] = 130,
         };
 
         /// <summary>
@@ -41,11 +43,8 @@ namespace MHalo.CoreFx.Helper.RSAExtensions
             var data = Encoding.UTF8.GetBytes(content);
             var modulusLength = rsa.KeySize / 8;
             var splitLength = modulusLength - PaddingLimitDic[padding];
-
             var sb = new StringBuilder();
-
             var splitsNumber = Convert.ToInt32(Math.Ceiling(data.Length * 1.0 / splitLength));
-
             var pointer = 0;
             for (int i = 0; i < splitsNumber; i++)
             {
@@ -55,7 +54,6 @@ namespace MHalo.CoreFx.Helper.RSAExtensions
                 sb.Append(connChar);
                 pointer += splitLength;
             }
-
             return sb.ToString().TrimEnd(connChar);
         }
 
@@ -66,7 +64,7 @@ namespace MHalo.CoreFx.Helper.RSAExtensions
         /// <code>
         /// var rsa = RSAHelper.Create();
         /// rsa.ImportPrivateKey(RSAKeyType.Pkcs8, privateKey);
-        /// string decryptContent = rsae.DecryptData(encryptContent, RSAEncryptionPadding.Pkcs1);
+        /// string decryptContent = rsa.DecryptData(encryptContent, RSAEncryptionPadding.Pkcs1);
         /// </code>
         /// </example>
         /// </summary>
@@ -87,7 +85,6 @@ namespace MHalo.CoreFx.Helper.RSAExtensions
 
             return Encoding.UTF8.GetString(byteList.ToArray());
         }
-
 
     }
 }
