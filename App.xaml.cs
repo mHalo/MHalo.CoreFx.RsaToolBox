@@ -55,6 +55,13 @@ namespace MHalo.CoreFx.RsaToolBox
                 services.AddSingleton<RsaCryptViewModel>();
 
 
+                services.AddSingleton<RsaTransKeyFormatPage>();
+                services.AddSingleton<RsaTransKeyFormatViewModel>();
+
+                services.AddSingleton<RsaSignPage>();
+                services.AddSingleton<RsaSignViewModel>();
+
+
 
 
                 services.AddSingleton<SettingsPage>();

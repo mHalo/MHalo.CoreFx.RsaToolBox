@@ -14,13 +14,13 @@ using MessageBox = Wpf.Ui.Controls.MessageBox;
 
 namespace MHalo.CoreFx.RsaToolBox.Views.Pages
 {
-    public partial class RsaCryptPage : INavigableView<RsaCryptViewModel>
+    public partial class RsaSignPage : INavigableView<RsaSignViewModel>
     {
-        public RsaCryptViewModel ViewModel { get; }
+        public RsaSignViewModel ViewModel { get; }
         public ISnackbarService snackbarService;
 
-        public RsaCryptPage(
-            RsaCryptViewModel viewModel,
+        public RsaSignPage(
+            RsaSignViewModel viewModel,
             ISnackbarService _snackbarService)
         {
             ViewModel = viewModel;
@@ -430,207 +430,113 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
         #endregion
 
 
-        private void PublicKeyEncrypt_Click(object sender, RoutedEventArgs e)
+        private void PrivateKeySign_Click(object sender, RoutedEventArgs e)
         {
+
             if (string.IsNullOrEmpty(ViewModel.PublickKey))
             {
                 snackbarService.Show(
-                    "加密失败",
+                    "签名失败",
+                    "未识别到有效的私钥字符",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+            }
+            if (string.IsNullOrEmpty(ViewModel.OrginalText))
+            {
+                snackbarService.Show(
+                    "签名失败",
+                    "请输入需要签名的原文",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+                return;
+            }
+
+            try
+            {
+                if (ViewModel.PrivateKeyType.HasValue)
+                {
+                    ViewModel.ResultText = RSAHelper.SignData(ViewModel.PrivateKeyType.Value, ViewModel.OrginalText, ViewModel.PrivateKey);
+                }
+                else
+                {
+                    snackbarService.Show(
+                        "签名失败",
+                        "未知异常",
+                        ControlAppearance.Caution,
+                        new SymbolIcon(SymbolRegular.Fluent24),
+                        TimeSpan.FromSeconds(5)
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                snackbarService.Show(
+                    "签名失败",
+                    ex.Message,
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+            }
+        }
+        private void PublicKeyVertify_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (string.IsNullOrEmpty(ViewModel.PublickKey))
+            {
+                snackbarService.Show(
+                    "验签失败",
                     "未识别到有效的公钥字符",
                     ControlAppearance.Caution,
                     new SymbolIcon(SymbolRegular.Fluent24),
                     TimeSpan.FromSeconds(5)
                 );
-                return;
-            }
-            if(string.IsNullOrEmpty(ViewModel.OrginalText))
-            {
-                snackbarService.Show(
-                    "加密失败",
-                    "请输入需要加密的原文",
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
-                return;
-            }
-
-            try
-            {
-                if (ViewModel.PublicKeyType.HasValue)
-                {
-                    ViewModel.ResultText = RSAHelper.Encrypt(ViewModel.PublicKeyType.Value, ViewModel.OrginalText, ViewModel.PublickKey);
-                }
-                else
-                {
-                    snackbarService.Show(
-                        "加密失败",
-                        "未知异常",
-                        ControlAppearance.Caution,
-                        new SymbolIcon(SymbolRegular.Fluent24),
-                        TimeSpan.FromSeconds(5)
-                    );
-                }
-            }
-            catch(Exception ex)
-            {
-                snackbarService.Show(
-                    "加密失败",
-                    ex.Message,
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
-            }
-        }
-        private void PrivateKeyDecrypt_Click(object sender, RoutedEventArgs e)
-        {
-
-            if (string.IsNullOrEmpty(ViewModel.PrivateKey))
-            {
-                snackbarService.Show(
-                    "解密失败",
-                    "未识别到有效的私钥字符",
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
             }
             if (string.IsNullOrEmpty(ViewModel.OrginalText))
             {
                 snackbarService.Show(
-                    "解密失败",
-                    "请输入需要解密的原文",
+                    "验签失败",
+                    "请输入需要验签的原文",
                     ControlAppearance.Caution,
                     new SymbolIcon(SymbolRegular.Fluent24),
                     TimeSpan.FromSeconds(5)
                 );
                 return;
             }
+
+            if (string.IsNullOrEmpty(ViewModel.ResultText))
+            {
+                snackbarService.Show(
+                    "验签失败",
+                    "请输入需要验签的签名",
+                    ControlAppearance.Caution,
+                    new SymbolIcon(SymbolRegular.Fluent24),
+                    TimeSpan.FromSeconds(5)
+                );
+                return;
+            }
+
+
             try
             {
-                if (ViewModel.PrivateKeyType.HasValue)
-                {
-                    ViewModel.ResultText = RSAHelper.Decrypt(ViewModel.PrivateKeyType.Value, ViewModel.OrginalText, ViewModel.PrivateKey);
-                }
-                else
+                if (ViewModel.PublicKeyType.HasValue && RSAHelper.VertifyData(ViewModel.PublicKeyType.Value, ViewModel.OrginalText, ViewModel.ResultText, ViewModel.PublickKey))
                 {
                     snackbarService.Show(
-                        "加密失败",
-                        "未知异常",
-                        ControlAppearance.Caution,
+                        "验签成功",
+                        "原文和签名验证成功！",
+                        ControlAppearance.Success,
                         new SymbolIcon(SymbolRegular.Fluent24),
                         TimeSpan.FromSeconds(5)
                     );
                 }
-            }
-            catch (Exception ex)
-            {
-                snackbarService.Show(
-                    "解密失败",
-                    ex.Message,
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
-            }
-        }
-        private void ExchangeOrginalTextAndResultText(object sender, RoutedEventArgs e)
-        {
-            ViewModel.OrginalText = ViewModel.ResultText;
-            ViewModel.ResultText = string.Empty;
-        }
-        
-
-        private void PrivateKeyEncrypt_Click(object sender, RoutedEventArgs e)
-        {
-
-            if (string.IsNullOrEmpty(ViewModel.PublickKey))
-            {
-                snackbarService.Show(
-                    "加密失败",
-                    "未识别到有效的私钥字符",
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
-            }
-            if (string.IsNullOrEmpty(ViewModel.OrginalText))
-            {
-                snackbarService.Show(
-                    "加密失败",
-                    "请输入需要加密的原文",
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
-                return;
-            }
-
-            try
-            {
-                if (ViewModel.PrivateKeyType.HasValue)
-                {
-                    ViewModel.ResultText = RSAHelper.EncyptByPrivateKey(ViewModel.PrivateKeyType.Value, ViewModel.OrginalText, ViewModel.PrivateKey);
-                }
                 else
                 {
                     snackbarService.Show(
-                        "加密失败",
-                        "未知异常",
-                        ControlAppearance.Caution,
-                        new SymbolIcon(SymbolRegular.Fluent24),
-                        TimeSpan.FromSeconds(5)
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                snackbarService.Show(
-                    "加密失败",
-                    ex.Message,
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
-            }
-        }
-        private void PublicKeyDecrypt_Click(object sender, RoutedEventArgs e)
-        {
-
-            if (string.IsNullOrEmpty(ViewModel.PublickKey))
-            {
-                snackbarService.Show(
-                    "解密失败",
-                    "未识别到有效的私钥字符",
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
-            }
-            if (string.IsNullOrEmpty(ViewModel.OrginalText))
-            {
-                snackbarService.Show(
-                    "解密失败",
-                    "请输入需要解密的原文",
-                    ControlAppearance.Caution,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(5)
-                );
-                return;
-            }
-
-
-            try
-            {
-                if (ViewModel.PublicKeyType.HasValue)
-                {
-                    ViewModel.ResultText = RSAHelper.DecryptByPublicKey(ViewModel.PublicKeyType.Value, ViewModel.OrginalText, ViewModel.PublickKey);
-                }
-                else
-                {
-                    snackbarService.Show(
-                        "解密失败",
+                        "签名失败",
                         "未知异常",
                         ControlAppearance.Caution,
                         new SymbolIcon(SymbolRegular.Fluent24),

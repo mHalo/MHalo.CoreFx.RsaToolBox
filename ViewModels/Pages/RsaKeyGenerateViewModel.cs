@@ -1,4 +1,5 @@
 ﻿using MHalo.CoreFx.Helper;
+using MHalo.CoreFx.RsaToolBox.Helpers.RSAExtensions;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Documents;
@@ -9,12 +10,6 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
 
     public partial class RsaKeyGenerateViewModel : ObservableObject
     {
-        /// <summary>
-        /// 密钥对
-        /// </summary>
-        /// <param name="PublicKey">公钥</param>
-        /// <param name="PrivateKey">私钥</param>
-        public record RSAKeyPair(string PublicKey, string PrivateKey);
 
         private RSAKeyType _rsaKeyType;
         private int _rsaKeyTypeSelectedIndex;
@@ -115,45 +110,19 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
         [RelayCommand]
         private void OnGenderateKey()
         {
-            string publicKey = string.Empty, privateKey = string.Empty, suffix = string.Empty;
             int keyLength = RsaKeyLength switch
             {
                 0 => 1024,
                 1 => 2048,
                 _ => 2048
             };
-            switch (_rsaKeyType)
-            {
-                case RSAKeyType.Pkcs1:
-                    RSAHelper.ExportPkcs1Key(keyLength, out publicKey, out privateKey, _rsaKeyFormat == 1);
-                    suffix = _rsaKeyFormat switch
-                    {
-                        1 => "pkcs1.pem",
-                        _ => "pkcs1.txt",
-                    };
-                    break;
-                case RSAKeyType.Pkcs8:
-                    RSAHelper.ExportPkcs8Key(keyLength, out publicKey, out privateKey, _rsaKeyFormat == 1);
-                    suffix = _rsaKeyFormat switch
-                    {
-                        1 => "pkcs8.pem",
-                        _ => "pkcs8.txt",
-                    };
-                    break;
-                case RSAKeyType.Xml:
-                    RSAHelper.ExportXMLKey(keyLength, out publicKey, out privateKey);
 
-                    suffix = _rsaKeyFormat switch
-                    {
-                        2 => "xml",
-                        _ => "xml.txt",
-                    };
-                    break;
-            }
+            (string publicKey, string privateKey) = RSAHelper.ExportRSAKey(_rsaKeyType, keyLength, _rsaKeyFormat == 1);
+            string suffix = $"{_rsaKeyType.ToString().ToLower() + (_rsaKeyFormat == 2 ? "" : _rsaKeyFormat == 1 ? ".pem" : ".txt")}";
 
             if (SaveToLocal)
             {
-                string pairPrefix = RandomHelper.RandomToken(6, true) + $"-{_rsaKeyType}";
+                string pairPrefix = $"[{_rsaKeyType}] - " + RandomHelper.RandomToken(6, true);
                 string parentFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), $"rsa-keys\\{pairPrefix}");
                 string publicKeyFilePath = Path.Combine(parentFolder, $"publicKey.{suffix}");
                 string privateKeyFilePath = Path.Combine(parentFolder, $"privateKey.{suffix}");

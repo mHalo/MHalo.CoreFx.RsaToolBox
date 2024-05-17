@@ -20,8 +20,8 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Windows
             new NavigationViewItem()
             {
                 Content = "密钥格式转换",
-                Icon = new SymbolIcon { Symbol = SymbolRegular.Checkmark24 },
-                TargetPageType = typeof(Views.Pages.RsaCryptPage)
+                Icon = new SymbolIcon { Symbol = SymbolRegular.ArrowSwap24 },
+                TargetPageType = typeof(Views.Pages.RsaTransKeyFormatPage)
             },
             new NavigationViewItem()
             {
@@ -32,8 +32,8 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Windows
             new NavigationViewItem()
             {
                 Content = "签名/验签",
-                Icon = new SymbolIcon { Symbol = SymbolRegular.Checkmark24 },
-                TargetPageType = typeof(Views.Pages.RsaCryptPage)
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Signature24 },
+                TargetPageType = typeof(Views.Pages.RsaSignPage)
             }
         };
 
@@ -42,7 +42,7 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Windows
         {
             new NavigationViewItem()
             {
-                Content = "Settings",
+                Content = "设置",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Settings24 },
                 TargetPageType = typeof(Views.Pages.SettingsPage)
             }

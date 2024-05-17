@@ -1,11 +1,7 @@
-﻿using System;
-using System.Data.SqlTypes;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml;
+﻿using System.Security.Cryptography;
 using System.Xml.Linq;
 
-namespace MHalo.CoreFx.Helper
+namespace MHalo.CoreFx.Helper.RSAExtensions
 {
     public static class RSAXmlExtensions
     {

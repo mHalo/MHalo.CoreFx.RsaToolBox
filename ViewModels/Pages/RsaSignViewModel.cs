@@ -5,7 +5,7 @@ using Wpf.Ui.Controls;
 
 namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
 {
-    public partial class RsaCryptViewModel : ObservableObject
+    public partial class RsaSignViewModel : ObservableObject
     {
         private string _publicKey;
         private string _privateKey;
@@ -96,7 +96,7 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
         public bool PublicKeyEncryptEnabled => !string.IsNullOrWhiteSpace(_publicKey) && !string.IsNullOrWhiteSpace(_orginalText);
         public bool PrivateKeyEncryptEnabled => !string.IsNullOrWhiteSpace(_privateKey) && !string.IsNullOrWhiteSpace(_orginalText);
 
-        public RsaCryptViewModel()
+        public RsaSignViewModel()
         {
             
         }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MHalo.CoreFx.Helper.RSAExtensions
+﻿namespace MHalo.CoreFx.Helper.RSAExtensions
 {
     public static class AlgorithmExtensions
     {

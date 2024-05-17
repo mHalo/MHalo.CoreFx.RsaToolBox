@@ -1,13 +1,13 @@
 ﻿<Page
-    x:Class="MHalo.CoreFx.RsaToolBox.Views.Pages.RsaCryptPage"
+    x:Class="MHalo.CoreFx.RsaToolBox.Views.Pages.RsaSignPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:MHalo.CoreFx.RsaToolBox.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="RsaCryptPage"
-    d:DataContext="{d:DesignInstance local:RsaCryptPage,
+    Title="RsaSignPage"
+    d:DataContext="{d:DesignInstance local:RsaSignPage,
                                      IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -134,37 +134,20 @@
                     <Border Grid.Row="0"  Background="#7ab8fb" BorderBrush="#dee2e6" BorderThickness="0,0,0,1">
                         <TextBlock Text="原文" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                     </Border>
-                    <ui:TextBox Grid.Row="1" x:Name="OrginalTextBox" Height="180" Padding="8" FontSize="12" Text="{Binding ViewModel.OrginalText, Mode=TwoWay}" TextWrapping="Wrap" BorderThickness="0" AcceptsTab="True" Background="Transparent" Foreground="#FF808CA4" PlaceholderText="请在此处输入要加密/解密的原文" />
+                    <ui:TextBox Grid.Row="1" x:Name="OrginalTextBox" Height="180" Padding="8" FontSize="12" Text="{Binding ViewModel.OrginalText, Mode=TwoWay}" TextWrapping="Wrap" BorderThickness="0" AcceptsTab="True" Background="Transparent" Foreground="#FF808CA4" PlaceholderText="请在此处输入要签名的原文" />
                 </Grid>
             </Border>
             <Border Grid.Column="1">
                 <Grid HorizontalAlignment="Center">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="42"></RowDefinition>
-                        <RowDefinition Height="42"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="42"></RowDefinition>
-                        <RowDefinition Height="42"></RowDefinition>
+                        <RowDefinition Height="50*"></RowDefinition>
+                        <RowDefinition Height="50*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Border Grid.Row="0" VerticalAlignment="Top">
-                        <ui:Button BorderThickness="1" CornerRadius="0" Content="公钥加密" Height="32" FontSize="12" Background="#CC52CC6F" PressedBackground="#FF52cc6f" MouseOverBackground="#EE52CC6F" Click="PublicKeyEncrypt_Click"  />
+                        <ui:Button BorderThickness="1" CornerRadius="0" Content="私钥签名" Height="32" FontSize="12" Background="#CCff9959" PressedBackground="#FFff9959"  MouseOverBackground="#EEff9959" Click="PrivateKeySign_Click"  />
                     </Border>
-                    <Border Grid.Row="1" VerticalAlignment="Top">
-                        <ui:Button BorderThickness="1" CornerRadius="0" Content="私钥解密" Height="32" FontSize="12" Background="#CCff9959" PressedBackground="#FFff9959"  MouseOverBackground="#EEff9959" Click="PrivateKeyDecrypt_Click"  />
-                    </Border>
-                    <Border Grid.Row="2" Background="AliceBlue" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Button Height="42" Cursor="Hand" Click="ExchangeOrginalTextAndResultText">
-                            <ui:SymbolIcon
-                                Grid.Row="0"
-                                FontSize="28"
-                                Symbol="ArrowLeft28" />
-                        </Button>
-                    </Border>
-                    <Border Grid.Row="3" VerticalAlignment="Bottom">
-                        <ui:Button BorderThickness="1" CornerRadius="0" Content="私钥加密" Height="32" FontSize="12" Background="#CCff9959" PressedBackground="#FFff9959"  MouseOverBackground="#EEff9959" Click="PrivateKeyEncrypt_Click"  />
-                    </Border>
-                    <Border Grid.Row="4" VerticalAlignment="Bottom">
-                        <ui:Button BorderThickness="1" CornerRadius="0" Content="公钥解密" Height="32" FontSize="12" Background="#CC52CC6F" PressedBackground="#FF52cc6f" MouseOverBackground="#EE52CC6F" Click="PublicKeyDecrypt_Click"  />
+                    <Border Grid.Row="1" VerticalAlignment="Bottom">
+                        <ui:Button BorderThickness="1" CornerRadius="0" Content="公钥验签" Height="32" FontSize="12" Background="#CC52CC6F" PressedBackground="#FF52cc6f" MouseOverBackground="#EE52CC6F" Click="PublicKeyVertify_Click"  />
                     </Border>
                 </Grid>
             </Border>
@@ -177,7 +160,7 @@
                     <Border Grid.Row="0"  Background="#e0acef" BorderBrush="#dee2e6" BorderThickness="0,0,0,1">
                         <TextBlock Text="结果" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                     </Border>
-                    <TextBox Grid.Row="1" x:Name="ResultTextBox" Height="180" Padding="8" FontSize="12" Text="{Binding ViewModel.ResultText, Mode=TwoWay}" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" IsReadOnly="True" Foreground="#FF8980A4" />
+                    <ui:TextBox Grid.Row="1" x:Name="ResultTextBox" Height="180" Padding="8" FontSize="12" Text="{Binding ViewModel.ResultText, Mode=TwoWay}" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" Foreground="#FF8980A4" PlaceholderText="请在此处输入要验签的签名" />
                 </Grid>
             </Border>
         </Grid>
