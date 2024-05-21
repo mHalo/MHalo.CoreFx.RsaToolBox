@@ -459,7 +459,8 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             {
                 if (ViewModel.PrivateKeyType.HasValue)
                 {
-                    ViewModel.ResultText = RSAHelper.SignData(ViewModel.PrivateKeyType.Value, ViewModel.OrginalText, ViewModel.PrivateKey);
+                    var algorithm = (SignerAlgorithm)ViewModel.AlgorithmSelectedIndex;
+                    ViewModel.ResultText = RSAHelper.SignData(ViewModel.PrivateKeyType.Value, ViewModel.OrginalText, ViewModel.PrivateKey, algorithm);
                 }
                 else
                 {
@@ -523,7 +524,8 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
 
             try
             {
-                if (ViewModel.PublicKeyType.HasValue && RSAHelper.VertifyData(ViewModel.PublicKeyType.Value, ViewModel.OrginalText, ViewModel.ResultText, ViewModel.PublickKey))
+                var algorithm = (SignerAlgorithm)ViewModel.AlgorithmSelectedIndex;
+                if (ViewModel.PublicKeyType.HasValue && RSAHelper.VertifyData(ViewModel.PublicKeyType.Value, ViewModel.OrginalText, ViewModel.ResultText, ViewModel.PublickKey, algorithm))
                 {
                     snackbarService.Show(
                         "验签成功",
@@ -536,7 +538,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 else
                 {
                     snackbarService.Show(
-                        "签名失败",
+                        "验签失败",
                         "未知异常",
                         ControlAppearance.Caution,
                         new SymbolIcon(SymbolRegular.Fluent24),
@@ -547,7 +549,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             catch (Exception ex)
             {
                 snackbarService.Show(
-                    "解密失败",
+                    "验签失败",
                     ex.Message,
                     ControlAppearance.Caution,
                     new SymbolIcon(SymbolRegular.Fluent24),

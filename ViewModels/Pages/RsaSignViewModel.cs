@@ -12,6 +12,9 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
         private RSAKeyType? _publicKeyType;
         private RSAKeyType? _privateKeyType;
 
+        [ObservableProperty]
+        private int _algorithmSelectedIndex;
+
         public string PublickKey
         {
             get => _publicKey;

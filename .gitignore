@@ -357,7 +357,3 @@ MigrationBackup/
 *.db
 *.db-shm
 *.db-wal
-test/MHalo.CoreFx.Core.Test/appsettings.Test.json
-test/MHalo.CoreFx.Helper.Test/appsettings.Test.json
-test/MHalo.CoreFx.Service.Wechat.Test/wechat.setting.json
-test/MHalo.CoreFx.Service.Wechat.Test/appsettings.Test.json
