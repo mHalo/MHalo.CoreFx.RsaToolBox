@@ -36,6 +36,8 @@
 <img src="https://user-images.githubusercontent.com/19524115/224662425-0b5223ca-e775-4331-8250-0779fd02c640.JPG" height="320">
 
 ## 🔵 更新日志
+- 2024-05-31   
+1.签名验签页面交互及逻辑优化 
 - 2024-05-21   
 1.签名/验签时增加算法选择  
 2.使用[`NetBeauty`](https://github.com/nulastudio/NetBeauty2)优化发布配置
