@@ -40,6 +40,7 @@
     <Grid VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Border Grid.Row="0">
@@ -119,11 +120,54 @@
                 </Border>
             </Grid>
         </Border>
-        <Grid Grid.Row="1" Margin="0,20,0,0">
+        <ui:Card Grid.Row="1" Background="#FFF1F1F1" Padding="12,6" Margin="0,10,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="180"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"  Text="签名算法：" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    <ComboBox Grid.Column="1" SelectedIndex="{Binding ViewModel.AlgorithmSelectedIndex, Mode = TwoWay}"  HorizontalAlignment="Center" FontSize="12" RenderTransformOrigin="0.5,0.5">
+                        <ComboBoxItem Content="SHA1withRSA" />
+                        <ComboBoxItem Content="SHA256withRSA" IsSelected="True" />
+                        <ComboBoxItem Content="SHA384withRSA" />
+                        <ComboBoxItem Content="SHA512withRSA" />
+                        <ComboBoxItem Content="SHA1withECDSA" />
+                        <ComboBoxItem Content="SHA224withECDSA" />
+                        <ComboBoxItem Content="SHA256withECDSA" />
+                        <ComboBoxItem Content="SHA384withECDSA" />
+                        <ComboBoxItem Content="SHA512withECDSA" />
+                        <ComboBoxItem Content="MD5withRSA" />
+                    </ComboBox>
+                    <TextBlock Grid.Column="2"  Text="URLEncode：" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                    <ui:ToggleSwitch Grid.Column="3" IsChecked="{Binding ViewModel.IsURLEncode, Mode=TwoWay}" />
+                </Grid>
+                <Grid Grid.Column="1" HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90"></ColumnDefinition>
+                        <ColumnDefinition Width="90"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" HorizontalAlignment="Left">
+                        <ui:Button BorderThickness="1" Content="私钥签名" Height="32" FontSize="12" Background="#CCff9959" PressedBackground="#FFff9959"  MouseOverBackground="#EEff9959" Click="PrivateKeySign_Click"  />
+                    </Border>
+                    <Border Grid.Column="1" HorizontalAlignment="Right">
+                        <ui:Button BorderThickness="1" Content="公钥验签" Height="32" FontSize="12" Background="#CC52CC6F" PressedBackground="#FF52cc6f" MouseOverBackground="#EE52CC6F" Click="PublicKeyVertify_Click"  />
+                    </Border>
+                </Grid>
+            </Grid>
+        </ui:Card>
+        <Grid Grid.Row="2" Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40*"></ColumnDefinition>
-                <ColumnDefinition Width="20*"></ColumnDefinition>
-                <ColumnDefinition Width="40*"></ColumnDefinition>
+                <ColumnDefinition Width="48*"></ColumnDefinition>
+                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition Width="48*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" BorderBrush="#dee2e6" BorderThickness="1">
                 <Grid>
@@ -131,54 +175,10 @@
                         <RowDefinition Height="36"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0"  Background="#7ab8fb" BorderBrush="#dee2e6" BorderThickness="0,0,0,1">
+                    <Border Grid.Row="0" BorderBrush="#dee2e6" BorderThickness="0,0,0,1" Background="#FF96F2D7">
                         <TextBlock Text="原文" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                     </Border>
                     <ui:TextBox Grid.Row="1" x:Name="OrginalTextBox" Height="180" Padding="8" FontSize="12" Text="{Binding ViewModel.OrginalText, Mode=TwoWay}" TextWrapping="Wrap" BorderThickness="0" AcceptsTab="True" Background="Transparent" Foreground="#FF808CA4" PlaceholderText="请在此处输入要签名的原文" />
-                </Grid>
-            </Border>
-            <Border Grid.Column="1">
-                <Grid HorizontalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40*"></RowDefinition>
-                        <RowDefinition Height="30*"></RowDefinition>
-                        <RowDefinition Height="30*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Border Grid.Row="0" VerticalAlignment="Top">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="36"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0"  Text="签名算法：" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                            <ComboBox Grid.Row="1" SelectedIndex="{Binding ViewModel.AlgorithmSelectedIndex, Mode = TwoWay}"  HorizontalAlignment="Center" FontSize="12" RenderTransformOrigin="0.5,0.5">
-                                <ComboBox.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
-                                        <SkewTransform/>
-                                        <RotateTransform/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
-                                </ComboBox.RenderTransform>
-                                <ComboBoxItem Content="SHA1withRSA" />
-                                <ComboBoxItem Content="SHA256withRSA" IsSelected="True" />
-                                <ComboBoxItem Content="SHA384withRSA" />
-                                <ComboBoxItem Content="SHA512withRSA" />
-                                <ComboBoxItem Content="SHA1withECDSA" />
-                                <ComboBoxItem Content="SHA224withECDSA" />
-                                <ComboBoxItem Content="SHA256withECDSA" />
-                                <ComboBoxItem Content="SHA384withECDSA" />
-                                <ComboBoxItem Content="SHA512withECDSA" />
-                                <ComboBoxItem Content="MD5withRSA" />
-                            </ComboBox>
-                        </Grid>
-                    </Border>
-                    <Border Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                        <ui:Button BorderThickness="1" CornerRadius="0" Content="私钥签名" Height="32" FontSize="12" Background="#CCff9959" PressedBackground="#FFff9959"  MouseOverBackground="#EEff9959" Click="PrivateKeySign_Click"  />
-                    </Border>
-                    <Border Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                        <ui:Button BorderThickness="1" CornerRadius="0" Content="公钥验签" Height="32" FontSize="12" Background="#CC52CC6F" PressedBackground="#FF52cc6f" MouseOverBackground="#EE52CC6F" Click="PublicKeyVertify_Click"  />
-                    </Border>
                 </Grid>
             </Border>
             <Border Grid.Column="2" BorderBrush="#dee2e6" BorderThickness="1">
@@ -187,7 +187,7 @@
                         <RowDefinition Height="36"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0"  Background="#e0acef" BorderBrush="#dee2e6" BorderThickness="0,0,0,1">
+                    <Border Grid.Row="0"  Background="#FFD0BFFF" BorderBrush="#dee2e6" BorderThickness="0,0,0,1">
                         <TextBlock Text="结果" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                     </Border>
                     <ui:TextBox Grid.Row="1" x:Name="ResultTextBox" Height="180" Padding="8" FontSize="12" Text="{Binding ViewModel.ResultText, Mode=TwoWay}" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" Foreground="#FF8980A4" PlaceholderText="请在此处输入要验签的签名" />

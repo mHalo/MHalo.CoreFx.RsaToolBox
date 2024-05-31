@@ -15,6 +15,10 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
         [ObservableProperty]
         private int _algorithmSelectedIndex;
 
+
+        [ObservableProperty]
+        private bool _isURLEncode;
+
         public string PublickKey
         {
             get => _publicKey;

@@ -2,6 +2,7 @@
 using MHalo.CoreFx.RsaToolBox.ViewModels.Pages;
 using Microsoft.Win32;
 using System.IO;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Input;
@@ -460,7 +461,8 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                 if (ViewModel.PrivateKeyType.HasValue)
                 {
                     var algorithm = (SignerAlgorithm)ViewModel.AlgorithmSelectedIndex;
-                    ViewModel.ResultText = RSAHelper.SignData(ViewModel.PrivateKeyType.Value, ViewModel.OrginalText, ViewModel.PrivateKey, algorithm);
+                    string resultText = RSAHelper.SignData(ViewModel.PrivateKeyType.Value, ViewModel.OrginalText, ViewModel.PrivateKey, algorithm);
+                    ViewModel.ResultText = ViewModel.IsURLEncode ? WebUtility.UrlEncode(resultText) : resultText;   
                 }
                 else
                 {
@@ -525,7 +527,12 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
             try
             {
                 var algorithm = (SignerAlgorithm)ViewModel.AlgorithmSelectedIndex;
-                if (ViewModel.PublicKeyType.HasValue && RSAHelper.VertifyData(ViewModel.PublicKeyType.Value, ViewModel.OrginalText, ViewModel.ResultText, ViewModel.PublickKey, algorithm))
+                string resultText = ViewModel.ResultText;
+                if (ViewModel.IsURLEncode)
+                {
+                    resultText = WebUtility.UrlDecode(resultText);
+                }
+                if (ViewModel.PublicKeyType.HasValue && RSAHelper.VertifyData(ViewModel.PublicKeyType.Value, ViewModel.OrginalText, resultText, ViewModel.PublickKey, algorithm))
                 {
                     snackbarService.Show(
                         "验签成功",
