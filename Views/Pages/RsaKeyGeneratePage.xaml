@@ -141,8 +141,8 @@
                     <ColumnDefinition Width="150"></ColumnDefinition>
                     <ColumnDefinition Width="150"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <ui:Button Grid.Column="0" Background="#74b816" MouseOverBackground="#82c91e" PressedBackground="#5c940d" Content="发送到加密解密" Icon="{ui:SymbolIcon Send24}" Foreground="#E4FFFFFF" Click="SendToCrypt_Click" IsEnabled="{Binding Path=ViewModel.IsGenerateKeyValid, Mode=OneWay}" />
-                <ui:Button Grid.Column="1" Background="#f76707" MouseOverBackground="#fd7e14" PressedBackground="#d9480f" Content="发送到加密解密" Icon="{ui:SymbolIcon Send24}" Foreground="#E4FFFFFF" Click="SendToSign_Click" IsEnabled="{Binding Path=ViewModel.IsGenerateKeyValid, Mode=OneWay}" />
+                <ui:Button Grid.Column="0" Background="#74b816" MouseOverBackground="#82c91e" PressedBackground="#5c940d" Content="发送到加密/解密" Icon="{ui:SymbolIcon Send24}" Foreground="#E4FFFFFF" Click="SendToCrypt_Click" IsEnabled="{Binding Path=ViewModel.IsGenerateKeyValid, Mode=OneWay}" />
+                <ui:Button Grid.Column="1" Background="#f76707" MouseOverBackground="#fd7e14" PressedBackground="#d9480f" Content="发送到签名/验签" Icon="{ui:SymbolIcon Send24}" Foreground="#E4FFFFFF" Click="SendToSign_Click" IsEnabled="{Binding Path=ViewModel.IsGenerateKeyValid, Mode=OneWay}" />
             </Grid>
         </ui:Card>
     </Grid>
