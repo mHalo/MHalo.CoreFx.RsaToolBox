@@ -13,7 +13,7 @@ namespace MHalo.CoreFx.RsaToolBox.ViewModels.Pages
         private RSAKeyType? _privateKeyType;
 
         [ObservableProperty]
-        private int _algorithmSelectedIndex;
+        private int _algorithmSelectedIndex = 1;
 
 
         [ObservableProperty]

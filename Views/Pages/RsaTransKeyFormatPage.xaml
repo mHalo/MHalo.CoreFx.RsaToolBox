@@ -84,13 +84,13 @@
         <!--顶部工具栏-->
         <Grid Grid.Row="1" Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
                 <ColumnDefinition Width="120"></ColumnDefinition>
                 <ColumnDefinition Width="72"></ColumnDefinition>
                 <ColumnDefinition Width="120"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="目标密钥类型：" VerticalAlignment="Center" Width="72" HorizontalAlignment="Left" />
+            <TextBlock Grid.Column="0" Text="目标密钥类型：" VerticalAlignment="Center" Width="88" HorizontalAlignment="Left" />
             <ComboBox Grid.Column="1" MinWidth="100" SelectedIndex="{Binding ViewModel.TargetRsaKeyTypeSelectedIndex, Mode = TwoWay}"  HorizontalAlignment="Left" SelectionChanged="RsaKeyType_SelectionChanged">
                 <ComboBoxItem Content="Pkcs1" IsSelected="True" />
                 <ComboBoxItem Content="Pkcs8" />

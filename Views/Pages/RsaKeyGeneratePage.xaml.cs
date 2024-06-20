@@ -1,9 +1,11 @@
-﻿using MHalo.CoreFx.RsaToolBox.ViewModels.Pages;
+﻿using MHalo.CoreFx.RsaToolBox.Services;
+using MHalo.CoreFx.RsaToolBox.ViewModels.Pages;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Extensions;
@@ -15,14 +17,20 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
     {
         public RsaKeyGenerateViewModel ViewModel { get; }
         public ISnackbarService snackbarService;
+        public INavigationService navigationService;
+        public IPageService pageService;
         public RsaKeyGeneratePage(
             RsaKeyGenerateViewModel viewModel,
-            ISnackbarService _snackbarService
+            ISnackbarService _snackbarService,
+            IPageService _pageService,
+            INavigationService _navigationService
             )
         {
             ViewModel = viewModel;
             DataContext = this;
+            pageService = _pageService;
             snackbarService = _snackbarService;
+            navigationService = _navigationService;
 
             InitializeComponent();
         }
@@ -96,6 +104,30 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
         {
             PrivateKeyBox.SelectAll();
             e.Handled = true;
+        }
+
+        private void SendToCrypt_Click(object sender, RoutedEventArgs e)
+        {
+            var cryptPage = pageService.GetPage<RsaCryptPage>();
+            if(cryptPage == null)
+            {
+                return;
+            }
+            cryptPage.ViewModel.PublickKey = ViewModel.RSAKey.PublicKey;
+            cryptPage.ViewModel.PrivateKey = ViewModel.RSAKey.PrivateKey;
+            navigationService.Navigate(typeof(RsaCryptPage));
+        }
+
+        private void SendToSign_Click(object sender, RoutedEventArgs e)
+        {
+            var signPage = pageService.GetPage<RsaSignPage>();
+            if (signPage == null)
+            {
+                return;
+            }
+            signPage.ViewModel.PublickKey = ViewModel.RSAKey.PublicKey;
+            signPage.ViewModel.PrivateKey = ViewModel.RSAKey.PrivateKey;
+            navigationService.Navigate(typeof(RsaSignPage));
         }
     }
 }

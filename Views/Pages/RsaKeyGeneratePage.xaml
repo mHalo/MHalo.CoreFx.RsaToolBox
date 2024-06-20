@@ -8,7 +8,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="RsaKeyGeneratePage"
     d:DataContext="{d:DesignInstance local:RsaKeyGeneratePage, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
+    d:DesignHeight="600"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
@@ -17,10 +17,11 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         
         <!--顶部工具栏-->
-        <ui:Card Grid.Row="0" Background="#FFF1F1F1" Padding="12,8,12,8" Margin="0,0,0,20">
+        <ui:Card Grid.Row="0" Background="#FFF1F1F1" Padding="12,8,12,8" Margin="0,0,0,12">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="72"></ColumnDefinition>
@@ -52,7 +53,7 @@
             </Grid>
         </ui:Card>
         <!--密钥生成区域-->        
-        <Grid Grid.Row="1" Margin="0,0,0,20">
+        <Grid Grid.Row="1" Margin="0,0,0,12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50*"></ColumnDefinition>
                 <ColumnDefinition Width="50*"></ColumnDefinition>
@@ -120,7 +121,7 @@
             </Border>
         </Grid>
         <!--底部工具栏-->
-        <ui:Card Grid.Row="2" Background="#FFF1F1F1" Padding="12,8,12,8" Margin="0,0,0,20">
+        <ui:Card Grid.Row="2" Background="#FFF1F1F1" Padding="12,8,12,8" Margin="0,0,0,12">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120"></ColumnDefinition>
@@ -132,6 +133,16 @@
                     <TextBlock Text="{Binding ViewModel.RsaLocalFolder}" TextWrapping="WrapWithOverflow" FontSize="12" Foreground="#FF929292"/>
                 </ui:HyperlinkButton>
                 <ui:Button Grid.Column="2" Width="120" Content="打开文件夹" Icon="{ui:SymbolIcon FolderOpen24}" HorizontalAlignment="Right"   Click="OpenRSAFolder_Click" IsEnabled="{Binding ViewModel.CanOpenRSAFolder}" />
+            </Grid>
+        </ui:Card>
+        <ui:Card Grid.Row="3"  Background="#FFF1F1F1" Padding="12,8,12,8" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"></ColumnDefinition>
+                    <ColumnDefinition Width="150"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ui:Button Grid.Column="0" Background="#74b816" MouseOverBackground="#82c91e" PressedBackground="#5c940d" Content="发送到加密解密" Icon="{ui:SymbolIcon Send24}" Foreground="#E4FFFFFF" Click="SendToCrypt_Click" IsEnabled="{Binding Path=ViewModel.IsGenerateKeyValid, Mode=OneWay}" />
+                <ui:Button Grid.Column="1" Background="#f76707" MouseOverBackground="#fd7e14" PressedBackground="#d9480f" Content="发送到加密解密" Icon="{ui:SymbolIcon Send24}" Foreground="#E4FFFFFF" Click="SendToSign_Click" IsEnabled="{Binding Path=ViewModel.IsGenerateKeyValid, Mode=OneWay}" />
             </Grid>
         </ui:Card>
     </Grid>
