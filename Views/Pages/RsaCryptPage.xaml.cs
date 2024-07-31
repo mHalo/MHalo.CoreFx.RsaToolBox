@@ -495,6 +495,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                     new SymbolIcon(SymbolRegular.Fluent24),
                     TimeSpan.FromSeconds(5)
                 );
+                return;
             }
             if (string.IsNullOrEmpty(ViewModel.OrginalText))
             {
@@ -545,7 +546,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
         private void PrivateKeyEncrypt_Click(object sender, RoutedEventArgs e)
         {
 
-            if (string.IsNullOrEmpty(ViewModel.PublickKey))
+            if (string.IsNullOrEmpty(ViewModel.PrivateKey))
             {
                 snackbarService.Show(
                     "加密失败",
@@ -554,6 +555,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                     new SymbolIcon(SymbolRegular.Fluent24),
                     TimeSpan.FromSeconds(5)
                 );
+                return;
             }
             if (string.IsNullOrEmpty(ViewModel.OrginalText))
             {
@@ -607,6 +609,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                     new SymbolIcon(SymbolRegular.Fluent24),
                     TimeSpan.FromSeconds(5)
                 );
+                return;
             }
             if (string.IsNullOrEmpty(ViewModel.OrginalText))
             {

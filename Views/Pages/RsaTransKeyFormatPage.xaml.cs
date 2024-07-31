@@ -297,6 +297,7 @@ namespace MHalo.CoreFx.RsaToolBox.Views.Pages
                     new SymbolIcon(SymbolRegular.Fluent24),
                     TimeSpan.FromSeconds(5)
                 );
+                return;
             }
             if (!RSAKeyExtensions.IsValidPrivateKey(ViewModel.OrginalPrivateKey, out _))
             {
